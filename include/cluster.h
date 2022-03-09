@@ -13,7 +13,7 @@
 #define IS_VALID(q, r) ((q + r >= GRID_SIZE - 1) && (q + r < (MAX_LINE * 2 - GRID_SIZE)))
 #define EMPTY ((t_hex)0)
 
-typedef u_char t_hex;
+typedef uint8_t t_hex;
 
 extern t_hex **gameGrid;
 
