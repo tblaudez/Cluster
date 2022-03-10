@@ -69,6 +69,10 @@ static void insertTokenTopRight(int q, int r, t_hex token) {
 void insertToken(int index, t_hex token) {
 	bool valid = true;
 
+	if (gameData.tokens[token] == 0)
+		illegalInstruction();
+	else gameData.tokens[token] -= 1;
+
 	switch (gameData.gravity) {
 		case BOTTOM:
 			valid = insertTokenBottom(index, token);
