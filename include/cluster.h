@@ -20,7 +20,7 @@ typedef enum {
 } t_gravity;
 
 typedef enum {
-	PLAYER_ONE = 0, PLAYER_TWO = 1, NONE
+	PLAYER_ONE = 0, PLAYER_TWO = 1, NONE = 3
 } t_player;
 
 typedef enum {
@@ -59,3 +59,7 @@ size_t getNonEmptyHexagonsDiagonalRight(int q, int r, t_hex buffer[gameData.maxL
 void swapInt(int *a, int *b);
 
 void rotateGameGrid(int amount);
+
+// winner.c
+
+t_player getWinner();
