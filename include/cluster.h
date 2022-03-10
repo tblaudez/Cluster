@@ -6,6 +6,8 @@
 #include <stdint.h> // uint8_t
 #include <stdbool.h> // bool
 
+#include "MLX42/MLX42.h"
+
 #pragma once
 
 #define EMPTY ((t_hex)0)
@@ -32,7 +34,17 @@ typedef struct {
 	t_hex **gameGrid;
 	t_gravity gravity;
 	size_t gridSize, hexOnGrid, maxLine, minimalConnect, tokenPerPlayer, tokenPerColor;
+
+	mlx_t *mlx;
+	mlx_image_t	*img;
+	int32_t img_index;
 } t_data;
+
+typedef struct {
+	int q;
+	int r;
+} t_axial;
+
 
 extern t_data gameData;
 
@@ -65,3 +77,7 @@ t_player getPlayerForHex(t_hex hex);
 // winner.c
 
 t_player getWinner();
+
+// draw_mlx.c
+
+void DrawHexagons(mlx_image_t* image, float angle);

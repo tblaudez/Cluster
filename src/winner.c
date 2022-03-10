@@ -77,8 +77,8 @@ t_player getWinner()
 			t_player playerForPiece = getPlayerForHex(gameData.gameGrid[q][r]);
 			if (playerForPiece == NONE)
 				continue;
-			addLength(getLengthX(q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
-			addLength(getLengthY(q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
+			addLength(getLengthX (q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
+			addLength(getLengthY (q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
 			addLength(getLengthXY(q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
 		}
 

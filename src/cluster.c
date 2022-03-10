@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cluster.h"
-#include <bsd/stdlib.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <getopt.h>
 
 t_data gameData = {
@@ -64,10 +65,33 @@ static void initGameData(void) {
 	gameData.buffer = calloc(1, gameData.maxLine * sizeof(t_hex));
 }
 
+
+static void initMLX()
+{
+	gameData.mlx = mlx_init(1024, 1024, "Cluster", false);
+	gameData.img = mlx_new_image(gameData.mlx, gameData.mlx->width, gameData.mlx->height);
+	gameData.img_index = mlx_image_to_window(gameData.mlx, gameData.img, 0, 0);
+
+	DrawHexagons(gameData.img, 0);
+}
+
+static void mlx_hook(void* _)
+{
+	static float angle = 0;
+	angle += (float)gameData.mlx->delta_time * 0.5f;
+	DrawHexagons(gameData.img, angle);
+}
+
 int main(int argc, char **argv) {
 	parse_arguments(argc, argv);
 	initGameData();
 
+	initMLX();
+
+	mlx_loop_hook(gameData.mlx, mlx_hook, NULL);
+	mlx_loop(gameData.mlx);
+
+	mlx_terminate(gameData.mlx);
 	deleteGameBoard(gameData.gameGrid);
 	free(gameData.buffer);
 	free(gameData.tokens[PLAYER_ONE]);
