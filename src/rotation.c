@@ -112,6 +112,6 @@ void rotateGameGrid(int amount) {
 	if (amount < 0 || amount > 5)
 		illegalInstruction();
 
-	bzero(gameData.buffer, gameData.maxLine);
+	bzero(gameData.buffer, gameData.maxLine * sizeof(t_hex));
 	rotationFunctions[(gameData.gravity + amount) % 6]();
 }
