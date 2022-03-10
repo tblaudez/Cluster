@@ -8,11 +8,13 @@
 #include <stdbool.h>
 
 void displayArray(void) {
+	static char *colors[5] = {"\033[0m", "\033[34m", "\033[36m", "\033[31m", "\033[33m"};
+
 	for (int r = 0; r < gameData.maxLine; r++) {
 		for (int q = 0; q < gameData.maxLine; q++) {
 			if (!areCoordinatesValid(q, r))
-				fputs("\033[31m X \033[0m", stdout);
-			else printf("\033[%dm%2d \033[0m", gameData.gameGrid[r][q] + 32, gameData.gameGrid[r][q]);
+				printf("%s X %s", "\033[30m", colors[EMPTY]);
+			else printf("%s%2d %s", colors[gameData.gameGrid[r][q]], gameData.gameGrid[r][q], colors[EMPTY]);
 		}
 		putc('\n', stdout);
 	}
@@ -63,8 +65,12 @@ size_t getNonEmptyHexagonsDiagonalRight(int q, int r, t_hex buffer[gameData.maxL
 		return 0;
 
 	register size_t offset = 0;
-	while (q < gameData.maxLine && r >= 0)
-		buffer[offset++] = gameData.gameGrid[r--][q++];
+	while (q < gameData.maxLine && r >= 0) {
+		if (gameData.gameGrid[r][q] != EMPTY)
+			buffer[offset++] = gameData.gameGrid[r][q];
+		r--;
+		q++;
+	}
 
 	return offset;
 }
@@ -98,6 +104,11 @@ size_t getRemainingTokens(t_player player) {
 	__builtin_unreachable();
 }
 
+char *getGravityString(void) {
+	static char *gravity[6] = {"BOTTOM", "BOTTOM RIGHT", "TOP RIGHT", "TOP", "TOP LEFT", "BOTTOM LEFT"};
+	return gravity[gameData.gravity];
+}
+
 void freeMemory(void) {
 	mlx_terminate(gameData.mlx);
 	
@@ -112,8 +123,7 @@ noreturn void playerWins(t_player player) {
 	exit(EXIT_SUCCESS);
 }
 
-t_player getPlayerForHex(t_hex hex)
-{
+t_player getPlayerForHex(t_hex hex) {
 	if (hex == 0)
 		return NONE;
 	return (hex - 1) / 2;

@@ -5,7 +5,7 @@
 #include <stdlib.h> // abs
 #include <stdint.h> // uint8_t
 #include <stdbool.h> // bool
-#include <sys/types.h>	// ssize_t
+#include <sys/types.h>    // ssize_t
 
 #include "MLX42/MLX42.h"
 
@@ -39,7 +39,7 @@ typedef struct {
 	ssize_t gridSize, hexOnGrid, maxLine, minimalConnect, tokenPerPlayer, tokenPerColor, tokens[5];
 
 	mlx_t *mlx;
-	mlx_image_t	*img;
+	mlx_image_t *img;
 	int32_t img_index;
 } t_data;
 
@@ -83,6 +83,8 @@ size_t getRemainingTokens(t_player player);
 
 char *getColorString(t_color color);
 
+char *getGravityString(void);
+
 void freeMemory(void);
 
 void playerWins(t_player player);
@@ -93,4 +95,7 @@ t_player getWinner();
 
 // draw_mlx.c
 
-void DrawHexagons(mlx_image_t* image, float angle);
+void DrawHexagons(mlx_image_t *image, float angle);
+
+// gameLoop.c
+void gameLoop(void);
