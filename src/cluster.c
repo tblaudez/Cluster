@@ -6,18 +6,21 @@
 #include <getopt.h>
 #include <unistd.h>
 
+mlx_errno_t mlx_errno;	// WHY
+
 t_data gameData = {
 		.gameGrid = NULL,
 		.buffer = NULL,
 		.gravity = BOTTOM,
 		.gridSize = 5,
 		.minimalConnect = 4,
+		.window_size = 0
 };
 
 static void parse_arguments(int argc, char **argv) {
 	int ch;
 
-	while ((ch = getopt(argc, argv, "s:c:h")) >= 0) {
+	while ((ch = getopt(argc, argv, "s:c:d:h")) >= 0) {
 		switch (ch) {
 			case 's':
 				if ((gameData.gridSize = atoi(optarg)) <= 1) {
@@ -31,8 +34,14 @@ static void parse_arguments(int argc, char **argv) {
 					exit(EXIT_FAILURE);
 				}
 				break;
+			case 'd':
+				if ((gameData.window_size = atoi(optarg)) <= 0) {
+					fprintf(stderr, "%s: bad window size\n", argv[0]);
+					exit(EXIT_FAILURE);
+				}
+				break;
 			case 'h':
-				fprintf(stdout, "Usage: %s [-h] [-s size] [-c connect]\n", argv[0]);
+				fprintf(stdout, "Usage: %s [-h] [-s size] [-c connect] [-d display size]\n", argv[0]);
 				exit(EXIT_SUCCESS);
 			default:
 				break;
@@ -56,18 +65,16 @@ static void initGameData(void) {
 
 static void initMLX()
 {
-	gameData.mlx = mlx_init(1024, 1024, "Cluster", false);
+	gameData.mlx = mlx_init(gameData.window_size, gameData.window_size, "Cluster", false);
 	gameData.img = mlx_new_image(gameData.mlx, gameData.mlx->width, gameData.mlx->height);
 	gameData.img_index = mlx_image_to_window(gameData.mlx, gameData.img, 0, 0);
 
-	DrawHexagons(gameData.img, 0);
+	DrawHexagons(gameData.img, GetBaseAngle());
 }
 
 static void mlx_hook(void* _)
 {
-	static float angle = 0;
-	angle += (float)gameData.mlx->delta_time * 0.5f;
-	DrawHexagons(gameData.img, angle);
+	DrawHexagons(gameData.img, GetBaseAngle());
 }
 
 static t_color *getTokens(t_player player) {
@@ -109,12 +116,14 @@ int main(int argc, char **argv) {
 	parse_arguments(argc, argv);
 	initGameData();
 	
-	/*
-	initMLX();
+	if (gameData.window_size > 0)
+	{
+		initMLX();
 
-	mlx_loop_hook(gameData.mlx, mlx_hook, NULL);
-	mlx_loop(gameData.mlx);
-	*/
+		mlx_loop_hook(gameData.mlx, mlx_hook, NULL);
+		mlx_loop(gameData.mlx);
+	}
+
 	
 	displayArray();
 

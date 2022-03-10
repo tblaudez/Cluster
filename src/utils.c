@@ -99,8 +99,9 @@ size_t getRemainingTokens(t_player player) {
 }
 
 void freeMemory(void) {
-	mlx_terminate(gameData.mlx);
-	
+	if (gameData.window_size > 0)
+		mlx_terminate(gameData.mlx);
+
 	for (int i = 0; i < gameData.maxLine; i++)
 		free(gameData.gameGrid[i]);
 	free(gameData.gameGrid);
