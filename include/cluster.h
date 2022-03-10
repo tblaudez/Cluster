@@ -38,6 +38,7 @@ typedef struct {
 
 	ssize_t gridSize, hexOnGrid, maxLine, minimalConnect, tokenPerPlayer, tokenPerColor, tokens[5];
 
+	size_t window_size;
 	mlx_t *mlx;
 	mlx_image_t *img;
 	int32_t img_index;
@@ -95,7 +96,11 @@ t_player getWinner();
 
 // draw_mlx.c
 
-void DrawHexagons(mlx_image_t *image, float angle);
+void DrawHexagons(mlx_image_t* image, float angle);
+
+float GetBaseAngle();
 
 // gameLoop.c
 void gameLoop(void);
+
+void gameStep(int i);

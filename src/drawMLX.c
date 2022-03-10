@@ -119,3 +119,11 @@ void DrawHexagons(mlx_image_t *image, float angle) {
 				mlx_put_pixel(image, x, y, HexDistanceToColor(d - 0.05f, hex));    // - 0.05f to add a black inner part
 		}
 }
+
+float GetBaseAngle()
+{
+	const float base = -M_PI / 2;
+	const float rotate = M_PI / 3;
+
+	return base + gameData.gravity * rotate;
+}

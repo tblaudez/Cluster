@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <getopt.h>
 #include "cluster.h"
+#include "math.h"
+
+mlx_errno_t mlx_errno;	// WHY
 
 t_data gameData = {
 		.gameGrid = NULL,
@@ -10,12 +13,13 @@ t_data gameData = {
 		.gravity = BOTTOM,
 		.gridSize = 5,
 		.minimalConnect = 4,
+		.window_size = 0
 };
 
 static void parse_arguments(int argc, char **argv) {
 	int ch;
 
-	while ((ch = getopt(argc, argv, "s:c:h")) >= 0) {
+	while ((ch = getopt(argc, argv, "s:c:d:h")) >= 0) {
 		switch (ch) {
 			case 's':
 				if ((gameData.gridSize = atoi(optarg)) <= 1) {
@@ -29,8 +33,14 @@ static void parse_arguments(int argc, char **argv) {
 					exit(EXIT_FAILURE);
 				}
 				break;
+			case 'd':
+				if ((gameData.window_size = atoi(optarg)) <= 0) {
+					fprintf(stderr, "%s: bad window size\n", argv[0]);
+					exit(EXIT_FAILURE);
+				}
+				break;
 			case 'h':
-				fprintf(stdout, "Usage: %s [-h] [-s size] [-c connect]\n", argv[0]);
+				fprintf(stdout, "Usage: %s [-h] [-s size] [-c connect] [-d display size]\n", argv[0]);
 				exit(EXIT_SUCCESS);
 			default:
 				break;
@@ -51,16 +61,36 @@ static void initGameData(void) {
 	gameData.buffer = calloc(1, gameData.maxLine * sizeof(t_hex));
 }
 
-static void initMLX() {
-	gameData.mlx = mlx_init(1024, 1024, "Cluster", false);
+static void initMLX()
+{
+	gameData.mlx = mlx_init(gameData.window_size, gameData.window_size, "Cluster", false);
 	gameData.img = mlx_new_image(gameData.mlx, gameData.mlx->width, gameData.mlx->height);
 	gameData.img_index = mlx_image_to_window(gameData.mlx, gameData.img, 0, 0);
-	DrawHexagons(gameData.img, 0);
+
+	DrawHexagons(gameData.img, GetBaseAngle());
 }
 
-static void mlx_hook(void *_) {
+static void mlx_hook(void* _)
+{
 	static float angle = 0;
-	angle += (float) gameData.mlx->delta_time * 0.5f;
+	static int i = 0;
+	static float time = 0;
+
+	float targetAngle = GetBaseAngle();
+
+	float diff = targetAngle - angle;
+	if (diff > M_PI) diff -= M_PI * 2;
+	else if (diff < -M_PI) diff += M_PI * 2;
+
+	angle += diff * gameData.mlx->delta_time * 0.5f;
+
+	time -= gameData.mlx->delta_time;
+	if (time < 0)
+	{
+		time += 1;
+		gameStep(i++);
+	}
+
 	DrawHexagons(gameData.img, angle);
 }
 
@@ -69,14 +99,17 @@ int main(int argc, char **argv) {
 
 	parse_arguments(argc, argv);
 	initGameData();
+	
+	if (gameData.window_size > 0)
+	{
+		initMLX();
 
-	/*
-	initMLX();
-
-	mlx_loop_hook(gameData.mlx, mlx_hook, NULL);
-	mlx_loop(gameData.mlx);
-	*/
-
-	gameLoop();
-	__builtin_unreachable();
+		mlx_loop_hook(gameData.mlx, mlx_hook, NULL);
+		mlx_loop(gameData.mlx);
+	}
+	else
+	{
+		gameLoop();
+		__builtin_unreachable();
+	}
 }
