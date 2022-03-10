@@ -57,14 +57,14 @@ void gameLoop(void) {
 			   getRemainingTokens(player), getGravityString());
 		fflush(stdout);
 
-		if (arc4random_uniform(2) == 0) {
+		if (arc4random_uniform(10) < 9) {
 			int row = (int) arc4random_uniform(gameData.maxLine);
 			t_color color = availableColors[arc4random_uniform((2))];
-			printf("ACTION -> PLAY %d %s\n", row, getColorString(color));
+			printf("ACTION -> PLAY %d %s\n", row+1, getColorString(color));
 			insertToken(row, color);
 		} else {
 			int amount = (int) arc4random_uniform(6);
-			printf("ACTION -> ROTATE %d\n", amount);
+			printf("ACTION -> ROTATE %d\n", amount+1);
 			rotateGameGrid(amount);
 		}
 
@@ -106,7 +106,7 @@ void gameLoop(void) {
 			__builtin_unreachable();
 		}
 
-		sleep(1);
+		usleep(1000000);
 		system("clear");
 	}
 }
