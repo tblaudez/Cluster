@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include "cluster.h"
+#include "math.h"
 
 mlx_errno_t mlx_errno;	// WHY
 
@@ -71,7 +72,26 @@ static void initMLX()
 
 static void mlx_hook(void* _)
 {
-	DrawHexagons(gameData.img, GetBaseAngle());
+	static float angle = 0;
+	static int i = 0;
+	static float time = 0;
+
+	float targetAngle = GetBaseAngle();
+
+	float diff = targetAngle - angle;
+	if (diff > M_PI) diff -= M_PI * 2;
+	else if (diff < -M_PI) diff += M_PI * 2;
+
+	angle += diff * gameData.mlx->delta_time * 0.5f;
+
+	time -= gameData.mlx->delta_time;
+	if (time < 0)
+	{
+		time += 1;
+		gameStep(i++);
+	}
+
+	DrawHexagons(gameData.img, angle);
 }
 
 int main(int argc, char **argv) {
@@ -87,7 +107,9 @@ int main(int argc, char **argv) {
 		mlx_loop_hook(gameData.mlx, mlx_hook, NULL);
 		mlx_loop(gameData.mlx);
 	}
-
-	gameLoop();
-	__builtin_unreachable();
+	else
+	{
+		gameLoop();
+		__builtin_unreachable();
+	}
 }

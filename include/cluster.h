@@ -102,3 +102,5 @@ float GetBaseAngle();
 
 // gameLoop.c
 void gameLoop(void);
+
+void gameStep(int i);
