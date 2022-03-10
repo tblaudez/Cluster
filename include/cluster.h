@@ -8,7 +8,7 @@
 
 #pragma once
 
-#define EMPTY ((t_hex)0)
+#define INPUT_SIZE 16
 
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
@@ -24,14 +24,14 @@ typedef enum {
 } t_player;
 
 typedef enum {
-	BLUE, CYAN, RED, ORANGE
+	EMPTY, BLUE, CYAN, RED, ORANGE
 } t_color;
 
 typedef struct {
-	t_hex *buffer, *tokens[2];
+	t_hex *buffer;
 	t_hex **gameGrid;
 	t_gravity gravity;
-	size_t gridSize, hexOnGrid, maxLine, minimalConnect, tokenPerPlayer, tokenPerColor;
+	ssize_t gridSize, hexOnGrid, maxLine, minimalConnect, tokenPerPlayer, tokenPerColor, tokens[5];
 } t_data;
 
 extern t_data gameData;
@@ -61,6 +61,16 @@ void swapInt(int *a, int *b);
 void rotateGameGrid(int amount);
 
 t_player getPlayerForHex(t_hex hex);
+
+char *getPlayerString(t_player player);
+
+size_t getRemainingTokens(t_player player);
+
+char *getColorString(t_color color);
+
+void freeMemory(void);
+
+void playerWins(t_player player);
 
 // winner.c
 

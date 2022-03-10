@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(Cluster C)
 
 set(CMAKE_VERBOSE_MAKEFILE true)
-set(SOURCE src/cluster.c include/cluster.h src/utils.c src/rotation.c src/insertToken.c)
+set(SOURCE src/cluster.c include/cluster.h src/utils.c src/rotation.c src/insertToken.c src/winner.c)
 
 add_executable(Cluster ${SOURCE})
 target_include_directories(Cluster PRIVATE include MLX42/include)
