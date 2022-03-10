@@ -60,6 +60,8 @@ void swapInt(int *a, int *b);
 
 void rotateGameGrid(int amount);
 
+t_player getPlayerForHex(t_hex hex);
+
 // winner.c
 
 t_player getWinner();

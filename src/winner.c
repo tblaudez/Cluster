@@ -72,12 +72,11 @@ t_player getWinner()
 	for (int q = 0; q < gameData.maxLine; q++)
 		for (int r = 0; r < gameData.maxLine; r++)
 		{
-			if (!areCoordinatesValid(q, r))
+			//if (!areCoordinatesValid(q, r))	// playerForPiece will be NONE if coords are not valid
+			//	continue;
+			t_player playerForPiece = getPlayerForHex(gameData.gameGrid[q][r]);
+			if (playerForPiece == NONE)
 				continue;
-			t_hex piece = gameData.gameGrid[q][r];
-			if (piece == EMPTY)
-				continue;
-			t_player playerForPiece = (piece - 1) / 2;	// TODO: use a getPlayerForHex(t_hex) function
 			addLength(getLengthX(q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
 			addLength(getLengthY(q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);
 			addLength(getLengthXY(q, r), &maxLengths[playerForPiece], &counts[playerForPiece]);

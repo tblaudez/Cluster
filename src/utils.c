@@ -85,3 +85,10 @@ inline bool areCoordinatesValid(int q, int r) {
 	register int sum = q + r;
 	return (sum >= gameData.gridSize - 1) && (sum < gameData.maxLine * 2 - gameData.gridSize);
 }
+
+t_player getPlayerForHex(t_hex hex)
+{
+	if (hex == 0)
+		return NONE;
+	return (hex - 1) / 2;
+}
