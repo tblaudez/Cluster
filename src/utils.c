@@ -87,8 +87,8 @@ inline bool areCoordinatesValid(int q, int r) {
 }
 
 char *getColorString(t_color color) {
-	static char *colors[4] = {"BLUE", "CYAN", "RED", "ORANGE"};
-	return colors[color - 1];
+	static char *colors[5] = {"(NONE)", "BLUE", "CYAN", "RED", "ORANGE"};
+	return colors[color];
 }
 
 char *getPlayerString(t_player player) {
@@ -96,12 +96,9 @@ char *getPlayerString(t_player player) {
 	return players[player];
 }
 
-size_t getRemainingTokens(t_player player) {
-	if (player == PLAYER_ONE)
-		return gameData.tokens[BLUE] + gameData.tokens[CYAN];
-	else if (player == PLAYER_TWO)
-		return gameData.tokens[RED] + gameData.tokens[ORANGE];
-	__builtin_unreachable();
+size_t inline getRemainingTokens(t_player player) {
+	size_t offset = player * 2 + 1;
+	return gameData.tokens[offset] + gameData.tokens[offset + 1];
 }
 
 char *getGravityString(void) {

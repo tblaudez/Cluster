@@ -28,7 +28,7 @@ typedef enum {
 } t_player;
 
 typedef enum {
-	EMPTY, BLUE, CYAN, RED, ORANGE
+	EMPTY = 0, BLUE = 1, CYAN = 2, RED = 3, ORANGE = 4
 } t_color;
 
 typedef struct {
@@ -53,12 +53,10 @@ typedef struct {
 extern t_data gameData;
 
 // cluster.c
-void insertToken(int row, t_hex token);
+bool insertToken(int row, t_color token);
 
 // utils.c
 void displayArray(void);
-
-void deleteGameBoard(t_hex **gameBoard);
 
 void illegalInstruction(void);
 
@@ -101,6 +99,6 @@ void DrawHexagons(mlx_image_t* image, float angle);
 float GetBaseAngle();
 
 // gameLoop.c
-void gameLoop(void);
+_Noreturn void gameLoop(void);
 
 void gameStep(int i);

@@ -7,7 +7,7 @@
 #include "cluster.h"
 
 static bool insertTokenBottom(int q, t_hex token) {
-	for (int r = (int)gameData.maxLine - 1; r >= 0; r--) {
+	for (int r = (int) gameData.maxLine - 1; r >= 0; r--) {
 		if (!areCoordinatesValid(q, r) || gameData.gameGrid[r][q] != EMPTY)
 			continue;
 		gameData.gameGrid[r][q] = token;
@@ -29,7 +29,7 @@ static bool insertTokenTop(int q, t_hex token) {
 }
 
 static bool insertTokenBottomRight(int r, t_hex token) {
-	for (int q = (int)gameData.maxLine - 1; q >= 0; q--) {
+	for (int q = (int) gameData.maxLine - 1; q >= 0; q--) {
 		if (!areCoordinatesValid(q, r) || gameData.gameGrid[r][q] != EMPTY)
 			continue;
 		gameData.gameGrid[r][q] = token;
@@ -50,28 +50,37 @@ static bool insertTokenTopLeft(int r, t_hex token) {
 	return false;
 }
 
-static void insertTokenBottomLeft(int q, int r, t_hex token) {
+static bool insertTokenBottomLeft(int q, int r, t_hex token) {
 	if (!areCoordinatesValid(q, r) || gameData.gameGrid[r][q] != EMPTY)
-		illegalInstruction();
+		return false;
 
-	while (r < gameData.maxLine && q >= 0 && gameData.gameGrid[r++][q--] == EMPTY);
+	while (r < gameData.maxLine && q >= 0 && gameData.gameGrid[r][q] == EMPTY) {
+		r++;
+		q--;
+	}
 	gameData.gameGrid[r - 1][q + 1] = token;
+
+	return true;
 }
 
-static void insertTokenTopRight(int q, int r, t_hex token) {
+static bool insertTokenTopRight(int q, int r, t_hex token) {
 	if (!areCoordinatesValid(q, r) || gameData.gameGrid[r][q] != EMPTY)
-		illegalInstruction();
+		return false;
 
-	while (r >= 0 && q < gameData.maxLine && gameData.gameGrid[r--][q++] == EMPTY);
+	while (r >= 0 && q < gameData.maxLine && gameData.gameGrid[r][q] == EMPTY) {
+		r--;
+		q++;
+	}
 	gameData.gameGrid[r + 1][q - 1] = token;
+
+	return true;
 }
 
-void insertToken(int index, t_hex token) {
+bool insertToken(int index, t_color token) {
 	bool valid = true;
 
 	if (gameData.tokens[token] == 0)
 		illegalInstruction();
-	else gameData.tokens[token] -= 1;
 
 	switch (gameData.gravity) {
 		case BOTTOM:
@@ -103,6 +112,8 @@ void insertToken(int index, t_hex token) {
 			break;
 	}
 
-	if (!valid)
-		illegalInstruction();
+	if (valid)
+		gameData.tokens[token] -= 1;
+
+	return valid;
 }
